@@ -3,11 +3,11 @@ from pyramid.response import Response
 
 # The following is a view template to display to user
 # Tag adds view handler and associates it with route_name as well as a template .pt IN tutorial
-@view_config(route_name='would_you_rather', renderer='would_you_rather.pt')
+@view_config(route_name='add_routes', renderer='add_routes.pt')
 def would_you_rather(request):
 
 	# return values dictate keys, values for chameleon template
-    return {'wyr': 'have arms for legs or legs for arms?'}
+    return {'user': 'USER'}
 
 # The following is a sample REST call handler
 # I testsed it worked with postman POST call to url <localhost:6543/post>
