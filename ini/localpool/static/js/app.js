@@ -1,6 +1,7 @@
 require([
         "esri/Map",
         "esri/views/MapView",
+        "esri/geometry/Point",
         "esri/Graphic",
         "esri/layers/GraphicsLayer",
         "esri/tasks/RouteTask",
@@ -13,7 +14,7 @@ require([
         "dojo/on",
         "dojo/domReady!"
 ], function(
-    Map, MapView, Graphic, GraphicsLayer, RouteTask, RouteParameters,
+    Map, MapView, Point, Graphic, GraphicsLayer, RouteTask, RouteParameters,
     FeatureSet, SimpleMarkerSymbol, SimpleLineSymbol, Color, urlUtils, on
     ) {
 
@@ -53,8 +54,6 @@ require([
         center: [-121.7617120, 38.5382320]  // Sets the center point of view in lon/lat
     });
 
-
-
     on(view, "click", addStop);
 
     var stopSymbol = new SimpleMarkerSymbol({
@@ -63,17 +62,27 @@ require([
         outline: { width: 4}
     });
 
+    stops = getStops();
+
     function addStop(event) {
         // Add a point at the location of the map click
-        console.log(event);
         var stop = new Graphic({
             geometry: event.mapPoint,
             symbol: stopSymbol
         });
         routeLyr.add(stop);
-
-        routeParams.stops.features.push(stop);
-        if (routeParams.stops.features.length >= 2) {
+        stops.push([event.mapPoint.latitude, event.mapPoint.longitude]);
+        saveStops();
+        stops = getStops();
+        if (stops.length % 2 == 0) {
+            start = stops[stops.length - 2];
+            end = stops[stops.length - 1];
+            startPoint = new Point({latitude: start[0], longitude: start[1]});
+            endPoint = new Point({latitude: end[0], longitude: end[1]});
+            startGraphic = new Graphic({geometry: startPoint, symbol: stopSymbol});
+            endGraphic = new Graphic({geometry: endPoint, symbol: endPoint});
+            // convert stop Point object to Graphic Object
+            routeParams.stops.features = [startGraphic, endGraphic];
             routeTask.solve(routeParams).then(showRoute);
         }
     }
@@ -82,5 +91,17 @@ require([
         var routeResult = data.routeResults[0].route;
         routeResult.symbol = routeSymbol;
         routeLyr.add(routeResult);
+    }
+
+    function saveStops(){
+        localStorage.setItem("stops", JSON.stringify(stops));
+    }
+
+    function getStops(){
+        stops = JSON.parse(localStorage.getItem("stops"));
+        if (stops === null){
+            return [];
+        }
+        return stops;
     }
 });
