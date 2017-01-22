@@ -1,0 +1,6 @@
+localpool.egg-info/PKG-INFO
+localpool.egg-info/SOURCES.txt
+localpool.egg-info/dependency_links.txt
+localpool.egg-info/entry_points.txt
+localpool.egg-info/requires.txt
+localpool.egg-info/top_level.txt
