@@ -26,7 +26,7 @@ html, body, #viewDiv {
     <div class="input-group">
       <input type="text" class="form-control" placeholder="Where to?">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="button">Find a Pool!</button>
+        <button class="btn btn-default" type="button" onclick="alert()">Find a Pool!</button>
       </span>
     </div><!-- /input-group -->
     <div id="viewDiv"></div>
